@@ -23,6 +23,8 @@ font_score = pygame.font.SysFont("comicsans", 30)  # For Distance, Cacti, Hi Sco
 font_mode = pygame.font.SysFont("comicsans", 20)   # For Game Mode, Normal Mode, Advanced Mode
 font_volume = pygame.font.SysFont("arial", 15)     # For Music Volume, SFX Volume
 font_hp = pygame.font.SysFont("comicsans", 15)     # For HP text
+font_hit = pygame.font.SysFont("comicsans", 15)     # For Hit text
+
 # Clock
 clock = pygame.time.Clock()
 
@@ -505,7 +507,7 @@ while running:
 
         # Display hit effect
         if hit_effect_counter > 0:
-            hit_text = font.render(hit_effect_text, True, RED if "-" in hit_effect_text else GREEN)
+            hit_text = font_hit.render(hit_effect_text, True, RED if "-" in hit_effect_text else GREEN)
             screen.blit(hit_text, (dino_x, dino_y - 20))
             hit_effect_counter -= 1
 
