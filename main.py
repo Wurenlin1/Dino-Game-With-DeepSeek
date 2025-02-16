@@ -162,7 +162,10 @@ jump_sound = pygame.mixer.Sound("Assets/Sounds/Jump.mp3")
 bite_sound = pygame.mixer.Sound("Assets/Sounds/Bite.mp3")
 collect_sound = pygame.mixer.Sound("Assets/Sounds/Collect.mp3")
 pygame.mixer.music.load("Assets/Sounds/BackgroundMusic.mp3")
-pygame.mixer.music.set_volume(0.3)
+pygame.mixer.music.set_volume(0.3)  # Initial music volume
+jump_sound.set_volume(0.5)  # Initial SFX volume
+bite_sound.set_volume(0.5)
+collect_sound.set_volume(0.5)
 pygame.mixer.music.play(-1)  # Loop background music
 
 def draw_dino(x, y, image):
@@ -262,7 +265,25 @@ def draw_pause_menu():
     # Draw pause menu options using images
     screen.blit(RESET_IMG, (restart_button_x, restart_button_y - 70))  # Restart button
     screen.blit(MENU_BUTTON_IMG, (menu_button_x, menu_button_y - 70))  # Main menu button
+    
+    # Volume controls
+    music_volume_text = font.render("Music Volume", True, WHITE)
+    sfx_volume_text = font.render("SFX Volume", True, WHITE)
+    screen.blit(music_volume_text, (WIDTH // 2 - 100, HEIGHT // 2 + 50))
+    screen.blit(sfx_volume_text, (WIDTH // 2 - 100, HEIGHT // 2 + 100))
 
+    # Music volume slider
+    music_slider_x = WIDTH // 2 - 100
+    music_slider_y = HEIGHT // 2 + 70
+    pygame.draw.rect(screen, WHITE, (music_slider_x, music_slider_y, 200, 10))
+    pygame.draw.rect(screen, GREEN, (music_slider_x, music_slider_y, int(200 * pygame.mixer.music.get_volume()), 10))
+
+    # SFX volume slider
+    sfx_slider_x = WIDTH // 2 - 100
+    sfx_slider_y = HEIGHT // 2 + 120
+    pygame.draw.rect(screen, WHITE, (sfx_slider_x, sfx_slider_y, 200, 10))
+    pygame.draw.rect(screen, BLUE, (sfx_slider_x, sfx_slider_y, int(200 * jump_sound.get_volume()), 10))
+    
 # Game loop
 running = True
 while running:
@@ -277,10 +298,12 @@ while running:
                 if mode1_button_x <= mouse_x <= mode1_button_x + mode1_button_width and mode1_button_y <= mouse_y <= mode1_button_y + mode1_button_height:
                     main_menu = False
                     game_mode = 1  # Normal Mode
+                    pygame.mixer.music.play(-1)  # Restart background music
                 # Check if Advanced Mode button is clicked
                 if mode2_button_x <= mouse_x <= mode2_button_x + mode2_button_width and mode2_button_y <= mouse_y <= mode2_button_y + mode2_button_height:
                     main_menu = False
                     game_mode = 2  # Advanced Mode
+                    pygame.mixer.music.play(-1)  # Restart background music
     else:
         screen.fill(WHITE)
 
@@ -317,6 +340,21 @@ while running:
                         pygame.mixer.music.pause()  # Pause background music
                     else:
                         pygame.mixer.music.unpause()  # Resume background music
+                # Adjust music volume
+                music_slider_x = WIDTH // 2 - 100
+                music_slider_y = HEIGHT // 2 + 70
+                if is_paused and music_slider_x <= mouse_x <= music_slider_x + 200 and music_slider_y <= mouse_y <= music_slider_y + 10:
+                    volume = (mouse_x - music_slider_x) / 200
+                    pygame.mixer.music.set_volume(volume)
+
+                # Adjust SFX volume
+                sfx_slider_x = WIDTH // 2 - 100
+                sfx_slider_y = HEIGHT // 2 + 120
+                if is_paused and sfx_slider_x <= mouse_x <= sfx_slider_x + 200 and sfx_slider_y <= mouse_y <= sfx_slider_y + 10:
+                    volume = (mouse_x - sfx_slider_x) / 200
+                    jump_sound.set_volume(volume)
+                    bite_sound.set_volume(volume)
+                    collect_sound.set_volume(volume)
                 # Check if restart button is clicked (in pause menu)
                 if is_paused and restart_button_x <= mouse_x <= restart_button_x + restart_button_width and restart_button_y - 70 <= mouse_y <= restart_button_y - 70 + restart_button_height:
                     reset_game()
