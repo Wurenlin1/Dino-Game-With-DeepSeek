@@ -18,6 +18,11 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
+# Fonts
+font_score = pygame.font.SysFont("comicsans", 30)  # For Distance, Cacti, Hi Score
+font_mode = pygame.font.SysFont("comicsans", 20)   # For Game Mode, Normal Mode, Advanced Mode
+font_volume = pygame.font.SysFont("arial", 15)     # For Music Volume, SFX Volume
+font_hp = pygame.font.SysFont("comicsans", 15)     # For HP text
 # Clock
 clock = pygame.time.Clock()
 
@@ -107,13 +112,12 @@ track_vel_x = -5
 max_health = 100
 health = max_health
 health_bar_width, health_bar_height = 200, 20
-health_bar_x, health_bar_y = 10, 100  # Updated position
+health_bar_x, health_bar_y = 10, 140  # Updated position
 
 # Score
 distance_score = 0  # Distance traveled (incremented every frame)
 cactus_score = 0    # Cacti jumped over (incremented when cactus goes off-screen)
 hi_score = 0
-font = pygame.font.SysFont("comicsans", 30)
 
 # Load high score from file
 def load_hi_score():
@@ -202,13 +206,13 @@ def draw_health_bar():
     pygame.draw.rect(screen, RED, (health_bar_x, health_bar_y, health_bar_width, health_bar_height))
     pygame.draw.rect(screen, GREEN, (health_bar_x, health_bar_y, health_bar_width * (health / max_health), health_bar_height))
     # Display HP number
-    hp_text = font.render(f"HP: {health}", True, BLACK)
+    hp_text = font_hp.render(f"HP: {health}", True, BLACK)  # Use font_hp
     screen.blit(hp_text, (health_bar_x + health_bar_width + 10, health_bar_y))
 
 def display_score(distance_score, cactus_score, hi_score):
-    distance_text = font.render(f"Distance: {distance_score}", True, BLACK)
-    cactus_text = font.render(f"Cacti: {cactus_score}", True, BLACK)
-    hi_score_text = font.render(f"Hi Score: {hi_score}", True, BLACK)
+    distance_text = font_score.render(f"Distance: {distance_score}", True, BLACK)  # Use font_score
+    cactus_text = font_score.render(f"Cacti: {cactus_score}", True, BLACK)        # Use font_score
+    hi_score_text = font_score.render(f"Hi Score: {hi_score}", True, BLACK)       # Use font_score
     screen.blit(distance_text, (10, 10))
     screen.blit(cactus_text, (10, 40))
     screen.blit(hi_score_text, (10, 70))
@@ -251,10 +255,10 @@ def draw_main_menu():
     screen.blit(DINO_START, (dino_menu_x, dino_menu_y))
     # Draw game mode buttons
     pygame.draw.rect(screen, GRAY, (mode1_button_x, mode1_button_y, mode1_button_width, mode1_button_height))
-    mode1_text = font.render("Normal Mode", True, BLACK)
+    mode1_text = font_mode.render("Normal Mode", True, BLACK)  # Use font_mode
     screen.blit(mode1_text, (mode1_button_x + 20, mode1_button_y + 10))
     pygame.draw.rect(screen, GRAY, (mode2_button_x, mode2_button_y, mode2_button_width, mode2_button_height))
-    mode2_text = font.render("Advanced Mode", True, BLACK)
+    mode2_text = font_mode.render("Advanced Mode", True, BLACK)  # Use font_mode
     screen.blit(mode2_text, (mode2_button_x + 20, mode2_button_y + 10))
 
 def draw_pause_menu():
@@ -262,15 +266,18 @@ def draw_pause_menu():
     overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
     overlay.fill((0, 0, 0, 128))  # Semi-transparent black
     screen.blit(overlay, (0, 0))
+    
     # Draw pause menu options using images
     screen.blit(RESET_IMG, (restart_button_x, restart_button_y - 70))  # Restart button
     screen.blit(MENU_BUTTON_IMG, (menu_button_x, menu_button_y - 70))  # Main menu button
-    
+
     # Volume controls
-    music_volume_text = font.render("Music Volume", True, WHITE)
-    sfx_volume_text = font.render("SFX Volume", True, WHITE)
-    screen.blit(music_volume_text, (WIDTH // 2 - 100, HEIGHT // 2 + 50))
-    screen.blit(sfx_volume_text, (WIDTH // 2 - 100, HEIGHT // 2 + 100))
+    music_volume_text = font_volume.render("Music Volume", True, WHITE)  # Use font_volume
+    sfx_volume_text = font_volume.render("SFX Volume", True, WHITE)       # Use font_volume
+
+    # Adjust the positions of the text labels here
+    screen.blit(music_volume_text, (WIDTH // 2 - 100, HEIGHT // 2 + 50))  # Music volume text position
+    screen.blit(sfx_volume_text, (WIDTH // 2 - 100, HEIGHT // 2 + 100))   # SFX volume text position
 
     # Music volume slider
     music_slider_x = WIDTH // 2 - 100
@@ -283,7 +290,7 @@ def draw_pause_menu():
     sfx_slider_y = HEIGHT // 2 + 120
     pygame.draw.rect(screen, WHITE, (sfx_slider_x, sfx_slider_y, 200, 10))
     pygame.draw.rect(screen, BLUE, (sfx_slider_x, sfx_slider_y, int(200 * jump_sound.get_volume()), 10))
-    
+
 # Game loop
 running = True
 while running:
